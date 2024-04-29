@@ -14,7 +14,7 @@ app.use(express.json())
 
 
 const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@cluster0.2fsgp3y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
-console.log(uri)
+
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
@@ -28,6 +28,23 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+    const craftCollection = client.db("craftDB").collection("craft");
+
+
+    app.get('/crafts', async(req,res)=>{
+      const cursor=  craftCollection.find();
+      const result= await cursor.toArray()
+      res.send(result)
+    })
+
+
+    app.post('/crafts', async(req,res)=>{
+      const newCraft=req.body;
+      const result= await craftCollection.insertOne(newCraft);
+      res.send(result)
+    })
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
