@@ -1,5 +1,5 @@
 const express = require('express');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const cors = require('cors');
 const app=express();
@@ -42,6 +42,13 @@ async function run() {
     app.post('/crafts', async(req,res)=>{
       const newCraft=req.body;
       const result= await craftCollection.insertOne(newCraft);
+      res.send(result)
+    })
+
+    app.delete('/crafts/:id', async(req,res)=>{
+      const id=req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result= await craftCollection.deleteOne(query);
       res.send(result)
     })
 
