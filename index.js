@@ -1,19 +1,15 @@
 const express = require("express");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
-jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser')
 const cors = require("cors");
 const app = express();
 const port = process.env.port || 5000;
 
 //middleWare
-app.use(cors({
-  origin:['http://localhost:5173'],
-  credentials:true
-}));
+app.use(cors())
 app.use(express.json());
-app.use(cookieParser())
+// app.use(cookieParser())
 
 const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@cluster0.2fsgp3y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -36,18 +32,18 @@ async function run() {
 
     // auth related api
 
-    app.post('/jwt', async(req,res)=>{
-      const user=req.body;
-      console.log(user)
-      const token=jwt.sign(user, process.env.Access_Token_secret,{ expiresIn: '1h' })
-      res
-      .cookie('token',token,{
-        httpOnly:true,
-        secure:false,
-        sameSite:"none"
-      })
-      .send({success:true})
-    })
+    // app.post('/jwt', async(req,res)=>{
+    //   const user=req.body;
+    //   console.log(user)
+    //   const token=jwt.sign(user, process.env.Access_Token_secret,{ expiresIn: '1h' })
+    //   res
+    //   .cookie('token',token,{
+    //     httpOnly:true,
+    //     secure:false,
+    //     sameSite:"none"
+    //   })
+    //   .send({success:true})
+    // })
 
 
 
@@ -55,7 +51,7 @@ async function run() {
 
     app.get("/crafts", async (req, res) => {
       const cursor = craftCollection.find();
-      console.log(req.cookies.token)
+      // console.log(req.cookies.token)
       const result = await cursor.toArray();
       res.send(result);
     });
